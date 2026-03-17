@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrato da Conta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #111827;
+            color: #f9fafb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+        th {
+            background: #111827;
+        }
+        a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Extrato da conta {{ conta_id }}</h1>
+    <p><a href="/">← Voltar para o dashboard</a></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in extrato %}
+            <tr>
+                <td>{{ item.0 }}</td>
+                <td>R$ {{ item.1|floatformat:2 }}</td>
+                <td>{{ item.2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,3 +127,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Settings do Jazzmin
+JAZZMIN_SETTINGS = {
+    "site_title": "Banco Digital",
+    "site_header": "Banco Digital",
+    "site_brand": "Banco Digital",
+    "welcome_sign": "Painel administrativo do Banco",
+
+    "icons": {
+        "banco.clientes": "fas fa-user",
+        "banco.contasbancarias": "fas fa-wallet",
+        "banco.contasledger": "fas fa-book",
+        "banco.transacoesledger": "fas fa-exchange-alt",
+        "banco.lancamentosledger": "fas fa-list",
+    },
+}

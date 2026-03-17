@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard do Banco</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #111827;
+            color: #f9fafb;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .card h2 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #9ca3af;
+        }
+        .card p {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+        th {
+            background: #111827;
+        }
+                .section {
+            margin-top: 40px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .panel {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Dashboard do Banco</h1>
+
+    <div class="cards">
+        <div class="card">
+            <h2>Total de clientes</h2>
+            <p>{{ total_clientes }}</p>
+        </div>
+        <div class="card">
+            <h2>Total de contas</h2>
+            <p>{{ total_contas }}</p>
+        </div>
+        <div class="card">
+            <h2>Total de transações</h2>
+            <p>{{ total_transacoes }}</p>
+        </div>
+        <div class="card">
+            <h2>Saldo total disponível</h2>
+            <p>R$ {{ saldo_total }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="panel">
+            <h2>Transações por dia</h2>
+            <canvas id="graficoTransacoes"></canvas>
+        </div>
+    </div>
+
+        <div class="section grid-2">
+        <div class="panel">
+            <h2>Maiores saldos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Conta</th>
+                        <th>Saldo</th>
+                        <th>Extrato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conta in maiores_saldos %}
+                    <tr>
+                        <td>{{ conta.1 }}</td>
+                        <td>{{ conta.0 }}</td>
+                        <td>R$ {{ conta.2|floatformat:2 }}</td>
+                        <td><a href="/extrato/{{ conta.0 }}/">Ver extrato</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Contas com mais movimentação</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Conta</th>
+                        <th>Lançamentos</th>
+                        <th>Extrato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conta in contas_mais_movimentadas %}
+                    <tr>
+                        <td>{{ conta.1 }}</td>
+                        <td>{{ conta.0 }}</td>
+                        <td>{{ conta.2 }}</td>
+                        <td><a href="/extrato/{{ conta.0 }}/">Ver extrato</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2>Últimas transações</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Iniciado por</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transacao in ultimas_transacoes %}
+            <tr>
+                <td>{{ transacao.0 }}</td>
+                <td>{{ transacao.1 }}</td>
+                <td>{{ transacao.2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<script>
+    const labelsTransacoes = JSON.parse('{{ labels_transacoes|escapejs }}');
+    const valoresTransacoes = JSON.parse('{{ valores_transacoes|escapejs }}');
+
+    const ctx = document.getElementById('graficoTransacoes').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labelsTransacoes,
+            datasets: [{
+                label: 'Transações por dia',
+                data: valoresTransacoes,
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+    
+</body>
+</html>

@@ -10,8 +10,26 @@ class ClientesAdmin(admin.ModelAdmin):
 
 @admin.register(ContasBancarias)
 class ContasBancariasAdmin(admin.ModelAdmin):
-    list_display = ("id", "cliente", "moeda", "status", "saldo_disponivel")
-    
+    list_display = ("id", "nome_cliente", "moeda", "status", "saldo_disponivel")
+    search_fields = ("cliente_id",)
+    list_filter = ("status", "moeda")
+    ordering = ("-id",)
+
+    def nome_cliente(self, obj):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT nome_completo
+                FROM clientes
+                WHERE id = %s
+                """,
+                [str(obj.cliente_id)],
+            )
+            row = cursor.fetchone()
+        return row[0] if row else None
+
+    nome_cliente.short_description = "Cliente"
+
     def saldo_disponivel(self, obj):
         with connection.cursor() as cursor:
             cursor.execute(
